@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Structured Output",
+  "type": "object",
+  "properties": {
+    "meal_parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "carbs": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "fat": {
+            "type": "number"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "food_name": {
+            "type": "string"
+          },
+          "grams": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "carbs",
+          "protein",
+          "fat",
+          "calories",
+          "food_name",
+          "grams"
+        ]
+      }
+    },
+    "meal_description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "meal_parts",
+    "meal_description"
+  ],
+  "additionalProperties": false
+}
