@@ -8,32 +8,112 @@
       "items": {
         "type": "object",
         "properties": {
-          "carbs": {
-            "type": "number"
-          },
-          "protein": {
-            "type": "number"
-          },
-          "fat": {
-            "type": "number"
-          },
-          "calories": {
-            "type": "number"
-          },
-          "food_name": {
+          "FoodGrouping": {
             "type": "string"
           },
-          "grams": {
+          "EstimatedServingSize_g": {
             "type": "number"
+          },
+          "Calories": {
+            "type": "number"
+          },
+          "TotalFat": {
+            "type": "object",
+            "properties": {
+              "value_g": {
+                "type": "number"
+              },
+              "SaturatedFat_g": {
+                "type": "number"
+              },
+              "TransFat_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value_g",
+              "SaturatedFat_g",
+              "TransFat_g"
+            ]
+          },
+          "Cholestero_mg": {
+            "type": "number"
+          },
+          "Sodium_mg": {
+            "type": "number"
+          },
+          "TotalCarbohydrates": {
+            "type": "object",
+            "properties": {
+              "value_g": {
+                "type": "number"
+              },
+              "DietaryFiber_g": {
+                "type": "number"
+              },
+              "TotalSugars_g": {
+                "type": "object",
+                "properties": {
+                  "value_g": {
+                    "type": "number"
+                  },
+                  "AddedSugars_g": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "value_g",
+                  "AddedSugars_g"
+                ]
+              },
+              "SugarAlcohol_g": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value_g",
+              "DietaryFiber_g",
+              "TotalSugars_g",
+              "SugarAlcohol_g"
+            ]
+          },
+          "Protein_g": {
+            "type": "number"
+          },
+          "VitaminsAndMinerals": {
+            "type": "object",
+            "properties": {
+              "VitaminD_mcg": {
+                "type": "number"
+              },
+              "Calcium_mg": {
+                "type": "number"
+              },
+              "Iron_mg": {
+                "type": "number"
+              },
+              "Potassium_mg": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "VitaminD_mcg",
+              "Calcium_mg",
+              "Iron_mg",
+              "Potassium_mg"
+            ]
           }
         },
         "required": [
-          "carbs",
-          "protein",
-          "fat",
-          "calories",
-          "food_name",
-          "grams"
+          "FoodGrouping",
+          "EstimatedServingSize_g",
+          "Calories",
+          "TotalFat",
+          "Cholestero_mg",
+          "Sodium_mg",
+          "TotalCarbohydrates",
+          "Protein_g",
+          "VitaminsAndMinerals"
         ]
       }
     },

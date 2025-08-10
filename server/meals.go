@@ -24,5 +24,5 @@ func (s *Server) createMeal(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "response not generated"})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"response": res})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": res})
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"calorie_bot/api"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -30,6 +31,8 @@ func New(api *api.OpenRouter) *Server {
 	return s
 }
 
-func (s *Server) Run() error {
-	return s.app.Listen(":4444")
+func (s *Server) Run(host string, port string) error {
+	connectionString := fmt.Sprintf("%s:%s", host, port)
+
+	return s.app.Listen(connectionString)
 }

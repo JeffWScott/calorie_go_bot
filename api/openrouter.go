@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"embed"
 	"encoding/json"
@@ -62,12 +63,12 @@ func (o *OpenRouter) NewClient() *APIClient {
 
 func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 	req := openai.ChatCompletionRequest{
-		Model: "x-ai/grok-3-mini",
+		Model: "x-ai/grok-3",
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role: "system",
 				Content: `
-	You are a profesional calorie and macro nutrients counter. 
+	You are a professional  calorie and macro nutrients counter. 
 	A user will provide you a description of a meal and you will provide them back two things:
 	1. an array consisting of each part of the mean with it's macros.
 	
@@ -86,6 +87,20 @@ func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 
 	✖️ BAD meal_description response:
 	response {..., meal_description: "Two Baked Potatoes with Sour Cream with Two Buttered Rolls for Lunch."}
+	
+	Report all macros in the numerical representation of the units below.
+	Include Estimated Serving Size of the FoodGrouping in grams (g).
+	Report Total Fat, Saturated Fat, Trans Fat, Total Carbohydrates, Dietary Fiber, Total Sugars, Added Sugars, Sugar Alcohol, and Protein in grams (g).
+	Report Cholesterol and Sodium in milligrams (mg).
+	For Vitamins and Minerals, report Vitamin D in micrograms (mcg), and Calcium, Iron, and Potassium in milligrams (mg).
+	Report Calories as a numeric value (no unit).
+
+	Example Value response:
+	✅ CORRECT numerical representation:
+		{..., "Cholestero_mg": 10}  // numerical
+	✖️ BAD numerical representation:
+		{..., "Cholestero_mg": "10mg"}  // Not numerical
+	
 	`,
 			},
 			{
@@ -104,6 +119,7 @@ func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 
 	resp, err := c.CreateChatCompletion(context.Background(), req)
 	if err != nil {
+		log.Printf("Chat completion error: %v", err)
 		return "", err
 	}
 
@@ -111,5 +127,10 @@ func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 		return "", nil // Or handle as error if needed
 	}
 
-	return resp.Choices[0].Message.Content, nil
+	content := resp.Choices[0].Message.Content // Assume this is the raw content
+	var buf bytes.Buffer
+	if err := json.Compact(&buf, []byte(content)); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
