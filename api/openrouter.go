@@ -65,7 +65,7 @@ func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 	req := openai.ChatCompletionRequest{
 		Model:           "x-ai/grok-4",
 		Temperature:     0.5,
-		ReasoningEffort: "low",
+		ReasoningEffort: "high",
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role: "system",
