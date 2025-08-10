@@ -63,7 +63,7 @@ func (o *OpenRouter) NewClient() *APIClient {
 
 func (c *APIClient) GetMealMacros(prompt string) (string, error) {
 	req := openai.ChatCompletionRequest{
-		Model: "x-ai/grok-3",
+		Model: "x-ai/grok-4",
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role: "system",
