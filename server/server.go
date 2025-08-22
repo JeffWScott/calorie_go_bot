@@ -1,7 +1,7 @@
 package server
 
 import (
-	"calorie_bot/api"
+	"calorie_bot/pipeline"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,16 +9,16 @@ import (
 )
 
 type Server struct {
-	app *fiber.App
-	api *api.OpenRouter
+	app      *fiber.App
+	pipeline *pipeline.Pipeline
 }
 
-func New(api *api.OpenRouter) *Server {
+func New(pipeline *pipeline.Pipeline) *Server {
 	app := fiber.New()
 
 	s := &Server{
-		app: app,
-		api: api,
+		app:      app,
+		pipeline: pipeline,
 	}
 
 	// Middleware

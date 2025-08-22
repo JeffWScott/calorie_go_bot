@@ -1,6 +1,9 @@
 package server
 
 import (
+	"calorie_bot/types"
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,12 +20,15 @@ func (s *Server) createMeal(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "prompt parameter is required"})
 	}
 
-	openRouterClient := s.api.NewClient()
-
-	res, err := openRouterClient.GetMealMacros(body.Prompt)
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "response not generated"})
+	job := types.Job{
+		Prompt: body.Prompt,
+		Id:     "1234",
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": res})
+
+	response, err := s.pipeline.Run(job)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": fmt.Sprintf("%v", err)})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"data": response})
 }

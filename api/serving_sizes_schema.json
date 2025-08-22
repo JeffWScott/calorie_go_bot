@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Structured Output",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "foodName": {
+        "type": "string"
+      },
+      "requestedServingId": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "foodName",
+      "requestedServingId"
+    ]
+  },
+  "additionalProperties": false
+}
