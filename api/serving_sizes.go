@@ -90,13 +90,14 @@ Return to me the your choices from this list that you think will help you with e
 
 func (c *APIClient) GetServingSizes(
 	semanticSearchResults []types.SymanticSearchResult,
+	originalPrompt string,
 	id string,
 ) ([]types.ServingSizeChoices, error) {
 	jsonBytes, err := json.MarshalIndent(semanticSearchResults, "", "  ")
 	if err != nil {
 		return []types.ServingSizeChoices{}, err
 	}
-	userContent := SERVING_SIZE_PREAMPLE + "\n" + string(jsonBytes)
+	userContent := originalPrompt + "\n" + SERVING_SIZE_PREAMPLE + "\n" + string(jsonBytes)
 
 	req := openai.ChatCompletionRequest{
 		Model: "google/gemini-2.5-flash-lite",

@@ -2,6 +2,7 @@ package types
 
 type Job struct {
 	Prompt         string
+	Model          string
 	Id             string
 	MaxAttempts    int
 	CurentAttempts int

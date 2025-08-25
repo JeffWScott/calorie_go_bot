@@ -58,6 +58,12 @@ func (p *Pipeline) Start() (string, error) {
 	p.Log(fmt.Sprintf("mealParts: %v", mealParts))
 
 	/**
+	SCHEDULE GET NUTRITION
+	  - offshoot process
+	*/
+	go p.ScheduleGetNutrition(mealParts)
+
+	/**
 	GET SYMANTIC SEARCH RESULTS
 	*/
 	p.job.MaxAttempts = 3
@@ -100,12 +106,13 @@ func (p *Pipeline) Start() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	prettyJSON, err = json.MarshalIndent(nutritionalInfo, "", "  ")
-	if err != nil {
-		log.Fatalf("Failed to marshal JSON: %v", err)
-	}
-	fmt.Println(string(prettyJSON))
+	/*
+		prettyJSON, err = json.MarshalIndent(nutritionalInfo, "", "  ")
+		if err != nil {
+			log.Fatalf("Failed to marshal JSON: %v", err)
+		}
+		fmt.Println(string(prettyJSON))
+	*/
 
 	/**
 	PICK SERVINGS
@@ -141,6 +148,17 @@ func (p *Pipeline) GetMealParts() (types.MealParts, error) {
 	return mealParts, nil
 }
 
+func (p *Pipeline) ScheduleGetNutrition(mealParts types.MealParts) {
+	p.Log(fmt.Sprintf("[GetSymanticSearchResults] Running %d/%d", p.job.CurentAttempts, p.job.MaxAttempts))
+
+	convexClinet := p.db.NewClient()
+
+	err := convexClinet.ScheduleGetNutrition(mealParts.MajorParts, p.job.Id)
+	if err != nil {
+		p.Log(fmt.Sprintf("[ScheduleGetNutrition] Error: %v", err))
+	}
+}
+
 func (p *Pipeline) GetSymanticSearchResults(mealParts types.MealParts) ([]types.SymanticSearchResult, error) {
 	p.job.CurentAttempts++
 	if p.job.CurentAttempts > p.job.MaxAttempts {
@@ -168,7 +186,7 @@ func (p *Pipeline) GetServingSizes(semanticSearchResults []types.SymanticSearchR
 
 	client := p.api.NewClient()
 
-	servingSizeChoices, err := client.GetServingSizes(semanticSearchResults, p.job.Id)
+	servingSizeChoices, err := client.GetServingSizes(semanticSearchResults, p.job.Prompt, p.job.Id)
 	if err != nil {
 		p.Log(fmt.Sprintf("[GetServingSizes] Error: %v", err))
 		p.GetServingSizes(semanticSearchResults)
@@ -204,7 +222,7 @@ func (p *Pipeline) GetMealMacros(nutritionalInfo []types.NutritionalInfo) (strin
 
 	client := p.api.NewClient()
 
-	mealMacros, err := client.GetMealMacros(p.job.Prompt, nutritionalInfo, p.job.Id)
+	mealMacros, err := client.GetMealMacros(p.job.Prompt, nutritionalInfo, p.job.Model, p.job.Id)
 	if err != nil {
 		p.Log(fmt.Sprintf("[GetServingSizes] Error: %v", err))
 		p.GetMealMacros(nutritionalInfo)

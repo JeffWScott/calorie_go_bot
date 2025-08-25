@@ -50,7 +50,7 @@ Use this nutritional info to help you estimate the macros for the user's meal.
 This is the only info I have so you will have to estimate anythign that isn't provied:
 `
 
-func (c *APIClient) GetMealMacros(prompt string, nutritionalInfo []types.NutritionalInfo, id string) (string, error) {
+func (c *APIClient) GetMealMacros(prompt string, nutritionalInfo []types.NutritionalInfo, model string, id string) (string, error) {
 	jsonBytes, err := json.MarshalIndent(nutritionalInfo, "", "  ")
 	if err != nil {
 		return "", err
@@ -58,9 +58,7 @@ func (c *APIClient) GetMealMacros(prompt string, nutritionalInfo []types.Nutriti
 	userContent := "MY MEAL: " + prompt + "\n\n" + MEAL_MACROS_PREAMBLE + "\n" + string(jsonBytes)
 
 	req := openai.ChatCompletionRequest{
-		Model:           "x-ai/grok-4",
-		Temperature:     0.5,
-		ReasoningEffort: "high",
+		Model: model,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    "system",

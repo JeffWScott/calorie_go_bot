@@ -7,9 +7,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const MODEL_NAME_DEFAULT = "x-ai/grok-4"
+
 func (s *Server) createMeal(c *fiber.Ctx) error {
 	var body struct {
-		Prompt string `json:"prompt"`
+		Prompt string  `json:"prompt"`
+		Model  *string `json:"model"`
 	}
 
 	if err := c.BodyParser(&body); err != nil {
@@ -20,8 +23,14 @@ func (s *Server) createMeal(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "prompt parameter is required"})
 	}
 
+	model := MODEL_NAME_DEFAULT
+	if body.Model != nil {
+		model = *body.Model
+	}
+
 	job := types.Job{
 		Prompt: body.Prompt,
+		Model:  model,
 		Id:     "1234",
 	}
 
